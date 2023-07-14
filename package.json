@@ -29,9 +29,11 @@
     "prettier-eslint": "^15.0.1"
   },
   "scripts": {
+    "coverage": "node --experimental-vm-modules node_modules/jest/bin/jest --coverage --passWithNoTests --detectOpenHandles",
     "format": "prettier --check ./",
     "format:fix": "prettier --write ./",
     "lint": "eslint src/**",
-    "start": "node ."
+    "start": "node .",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest --passWithNoTests --detectOpenHandles"
   }
 }
