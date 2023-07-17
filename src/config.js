@@ -87,6 +87,10 @@ export const config = {
    */
   resetAfterUse: true,
   /**
+   * @property {String} timezone Timezone to use in `MariaDB`.
+   */
+  timezone: 'Asia/Seoul',
+  /**
    * @property {Boolean} usePool Whether to use `pool` for `MariaDB` connections.
    */
   usePool: true
