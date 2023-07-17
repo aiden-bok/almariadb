@@ -23,8 +23,6 @@
     "sourceType": "module"
   },
   "plugins": ["import", "jest"],
-  "rules": {
-    "no-console": "error"
-  },
+  "rules": {},
   "settings": {}
 }
