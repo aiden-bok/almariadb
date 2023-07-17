@@ -91,3 +91,26 @@ export const config = {
    */
   usePool: true
 }
+
+/**
+ * Returns an `almariadb` configuration object(`config`) that applied the user-defined configuration object.
+ *
+ * @param {config} [custom={}] User-defined configuration.
+ * @param {config} [original=config] Default configuration.
+ * @returns {config} Custom configuration.
+ */
+export const applyConfig = (custom = {}, original = config) => {
+  for (const key in original) {
+    if (original[key]?.constructor.name === 'Object') {
+      if (custom[key]?.constructor.name === 'Object') {
+        custom[key] = applyConfig(custom[key] || {}, original[key])
+      } else {
+        custom[key] = original[key]
+      }
+    } else {
+      custom[key] = custom[key] !== undefined ? custom[key] : original[key]
+    }
+  }
+
+  return custom
+}
