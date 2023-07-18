@@ -1,0 +1,51 @@
+{
+  "name": "almariadb",
+  "version": "1.0.0",
+  "description": "ALMariaDB(Aiden Library for MariaDB) is a library that makes it easy to use MariaDB on Node.js.",
+  "keywords": [
+    "database",
+    "library",
+    "mariadb",
+    "mysql",
+    "node.js",
+    "node",
+    "query"
+  ],
+  "homepage": "https://github.com/aiden-bok/almariadb",
+  "bugs": {
+    "url": "https://github.com/aiden-bok/almariadb/issues",
+    "email": "bokjaeoh@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aiden-bok/almariadb.git"
+  },
+  "author": "Aiden <bokjaeoh@gmail.com>",
+  "license": "ISC",
+  "engines": {
+    "node": ">= 18.16.1"
+  },
+  "main": "src/index.js",
+  "type": "module",
+  "dependencies": {
+    "alquery": "^1.0.3",
+    "mariadb": "^3.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.43.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jest": "^27.2.2",
+    "jest": "^29.6.0",
+    "prettier": "^2.8.8",
+    "prettier-eslint": "^15.0.1"
+  },
+  "scripts": {
+    "coverage": "node --experimental-vm-modules node_modules/jest/bin/jest --coverage --passWithNoTests --detectOpenHandles",
+    "format": "prettier --check ./",
+    "format:fix": "prettier --write ./",
+    "lint": "eslint src/**",
+    "start": "node .",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest --passWithNoTests --detectOpenHandles"
+  }
+}
