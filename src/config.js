@@ -43,8 +43,8 @@ export const config = {
    */
   logger: {
     error: (message) => console.error(message),
-    network: (message) => console.info(message),
-    query: (message) => console.debug(message)
+    network: (message) => console.debug(message),
+    query: (message) => console.info(message)
   },
   /**
    * @property {Number} acquireTimeout Timeout to get a new connection from **pool**(in milliseconds).

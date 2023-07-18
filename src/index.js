@@ -105,6 +105,32 @@ const poolInfo = () => {
   }
 }
 
-const almariadb = { createPool, getConnection, mariadb }
+/**
+ * Run query statement and returns result.
+ *
+ * @param {String} query Query statement to be run.
+ * @throws {Error} Information needed to connect to 'MariaDB' is missing in the configuration information.
+ * @throws {Error} MariaDB' not connected!
+ * @returns {mixed} Result of run query statement.
+ */
+const query = async (query) => {
+  const tag = '[query]'
+
+  const connection = await getConnection()
+  if (!connection || !connection.isValid()) {
+    throw new Error(`${tag} 'MariaDB' not connected!`)
+  }
+
+  try {
+    return await connection.query(query)
+  } catch (error) {
+    throw new Error(`${tag} ${error.toString()}`)
+  } finally {
+    connection.release && connection.release()
+    connection.end && connection.end()
+  }
+}
+
+const almariadb = { createPool, getConnection, mariadb, query }
 
 export default almariadb
