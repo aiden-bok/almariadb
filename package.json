@@ -19,7 +19,7 @@
   "main": "src/index.js",
   "type": "module",
   "dependencies": {
-    "alquery": "^1.0.2",
+    "alquery": "^1.0.3",
     "mariadb": "^3.2.0"
   },
   "devDependencies": {
