@@ -11,6 +11,15 @@
     "node",
     "query"
   ],
+  "homepage": "https://github.com/aiden-bok/almariadb",
+  "bugs": {
+    "url": "https://github.com/aiden-bok/almariadb/issues",
+    "email": "bokjaeoh@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aiden-bok/almariadb.git"
+  },
   "author": "Aiden <bokjaeoh@gmail.com>",
   "license": "ISC",
   "engines": {
