@@ -11,7 +11,7 @@ import { applyConfig, config } from './config.js'
  * @throws {Error} 'MariaDB' connection pool not created!
  * @returns {mariadb.Pool} `MariaDB` connection pool.
  */
-const createPool = async (custom) => {
+const createPool = (custom) => {
   const tag = '[createPool]'
 
   // Apply custom configuration
@@ -25,11 +25,7 @@ const createPool = async (custom) => {
   mariadb.config = cfg
 
   if (!mariadb.pool) {
-    mariadb.pool = await mariadb.createPool(cfg)
-  }
-
-  if (!mariadb.pool) {
-    throw new Error(`${tag} 'MariaDB' connection pool not created!`)
+    mariadb.pool = mariadb.createPool(cfg)
   }
 
   poolInfo()
@@ -73,7 +69,7 @@ const getConnection = async (custom) => {
   mariadb.config = cfg
 
   if (cfg.usePool === true) {
-    await createPool()
+    createPool(cfg)
     return await getConnection()
   } else {
     mariadb.connection = await mariadb.createConnection(cfg)
