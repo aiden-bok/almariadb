@@ -41,11 +41,11 @@
     "prettier-eslint": "^15.0.1"
   },
   "scripts": {
-    "coverage": "node --experimental-vm-modules node_modules/jest/bin/jest --coverage --passWithNoTests --detectOpenHandles",
+    "coverage": "node --experimental-vm-modules node_modules/jest/bin/jest --coverage --passWithNoTests --forceExit",
     "format": "prettier --check ./",
     "format:fix": "prettier --write ./",
     "lint": "eslint src/**",
     "start": "node .",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest --passWithNoTests --detectOpenHandles"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest --passWithNoTests --forceExit"
   }
 }
