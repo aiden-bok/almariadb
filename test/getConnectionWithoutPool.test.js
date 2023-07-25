@@ -44,7 +44,32 @@ describe('MariaDB connection tests using created pool by createPool()', () => {
     }
   })
 
-  test(`getConnection() using pool returns connection`, async () => {
+  test(`getConnection() without pool returns connection(Promise)`, async () => {
+    const config = {
+      host: '127.0.0.1',
+      port: 3308,
+      database: 'test',
+      user: 'test',
+      password: 'test',
+      logger: { error: null, network: null, query: null },
+      usePool: false
+    }
+    let connection, error
+    await almariadb
+      .getConnection(config)
+      .then((conn) => {
+        connection = conn
+      })
+      .catch((err) => {
+        error = err
+      })
+      .finally(() => {
+        expect(connection.isValid()).toBe(true)
+        expect(error).toBe(undefined)
+      })
+  })
+
+  test(`getConnection() without pool returns connection(Await)`, async () => {
     const config = {
       host: '127.0.0.1',
       port: 3308,

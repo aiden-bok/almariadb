@@ -104,13 +104,14 @@ const poolInfo = () => {
   if (!mariadb.pool) {
     throw new Error(`${tag} 'MariaDB' connection pool not created!`)
   } else {
-    if (mariadb.config?.logger?.network) {
-      mariadb.config.logger.network(
-        `${tag} MariaDB connections - ` +
-          `active: ${mariadb.pool.activeConnections()} / ` +
-          `idle: ${mariadb.pool.idleConnections()} / ` +
-          `total: ${mariadb.pool.totalConnections()}`
-      )
+    let message = `${tag} MariaDB connections - `
+    message += `active: ${mariadb.pool.activeConnections()} / `
+    message += `idle: ${mariadb.pool.idleConnections()} / `
+    message += `total: ${mariadb.pool.totalConnections()}`
+    if (mariadb.config?.logger?.query) {
+      mariadb.config.logger.query(message)
+    } else {
+      console.log(message)
     }
   }
 }
@@ -287,6 +288,7 @@ const almariadb = {
   getConnection,
   insert,
   mariadb,
+  poolInfo,
   query,
   select,
   selectGroup,
