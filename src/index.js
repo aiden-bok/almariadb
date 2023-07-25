@@ -45,22 +45,21 @@ const createPool = (custom) => {
 const getConnection = async (custom) => {
   const tag = '[getConnection]'
 
+  if (mariadb.connection?.isValid()) {
+    return mariadb.connection
+  }
+
   if (mariadb.pool) {
     mariadb.connection = await mariadb.pool.getConnection()
     poolInfo()
 
-    if (mariadb.connection.isValid()) {
+    if (mariadb.connection?.isValid()) {
       return mariadb.connection
     }
   }
 
-  if (mariadb.connection && mariadb.connection.isValid()) {
-    return mariadb.connection
-  }
-
   // Apply custom configuration
   const cfg = (custom && applyConfig(custom)) || mariadb.config || config
-
   if (!cfg.host || !cfg.port || !cfg.user || !cfg.password) {
     throw new Error(
       `${tag} Information needed to connect to 'MariaDB' is missing in the configuration information.`
@@ -74,7 +73,7 @@ const getConnection = async (custom) => {
   } else {
     mariadb.connection = await mariadb.createConnection(cfg)
 
-    if (mariadb.connection && mariadb.connection.isValid()) {
+    if (mariadb.connection?.isValid()) {
       return mariadb.connection
     } else {
       throw new Error(`${tag} 'MariaDB' not connected!`)
@@ -137,6 +136,7 @@ const query = async (query) => {
   } catch (error) {
     throw new Error(`${tag} ${error.toString()}`)
   } finally {
+    connection.destroy && connection.destroy()
     connection.release && connection.release()
     connection.end && connection.end()
   }
