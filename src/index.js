@@ -7,31 +7,29 @@ import { applyConfig, config } from './config.js'
  * Returns `MariaDB` connection pool that created using configuration information.
  *
  * @param {config} [custom] Configuration(connection, etc.) object to apply when useing an `MariaDB`.
- * @throws {Error} Information needed to connect to 'MariaDB' is missing in the configuration information.
- * @throws {Error} 'MariaDB' connection pool not created!
+ * @throws {Error} Information needed to connect to MariaDB is missing in the configuration information.
  * @returns {mariadb.Pool} `MariaDB` connection pool.
  */
-const createPool = (custom) => {
-  const tag = '[createPool]'
+const createPool = (custom) =>
+  new Promise((resolve, reject) => {
+    const tag = '[createPool]'
+    // Apply custom configuration
+    const cfg = (custom && applyConfig(custom)) || mariadb.config || config
+    if (!cfg.host || !cfg.port || !cfg.user || !cfg.password) {
+      reject(
+        new Error(
+          `${tag} Information needed to connect to MariaDB is missing in the configuration information.`
+        )
+      )
+    }
+    mariadb.config = cfg
 
-  // Apply custom configuration
-  const cfg = (custom && applyConfig(custom)) || mariadb.config || config
-
-  if (!cfg.host || !cfg.port || !cfg.user || !cfg.password) {
-    throw new Error(
-      `${tag} Information needed to connect to 'MariaDB' is missing in the configuration information.`
-    )
-  }
-  mariadb.config = cfg
-
-  if (!mariadb.pool) {
-    mariadb.pool = mariadb.createPool(cfg)
-  }
-
-  poolInfo()
-
-  return mariadb.pool
-}
+    if (!mariadb.pool) {
+      mariadb.pool = mariadb.createPool(cfg)
+    }
+    poolInfo()
+    resolve(mariadb.pool)
+  })
 
 /**
  * Return the `MariaDB` connection object after connecting to `MariaDB`.
