@@ -33,10 +33,10 @@ const createPool = (custom) => {
  * Return the `MariaDB` connection object after connecting to `MariaDB`.
  *
  * @param {config} [custom] Configuration(connection, etc.) object to apply when useing an `MariaDB`.
- * @throws {Error} Information needed to connect to 'MariaDB' is missing in the configuration information.
- * @throws {Error} 'MariaDB' connection pool not created!
- * @throws {Error} 'MariaDB' not connected!
- * @returns {Promise<mariadb.PoolConnection>|Promise<mariadb.Connection>} `MariaDB` connection object.
+ * @throws {Error} Failed to get connection from MariaDB pool.
+ * @throws {Error} Configuration needed to connect to MariaDB was not provided.
+ * @throws {Error} Failed to create MariaDB connection object.
+ * @returns {ConnectionPromise} `MariaDB` connection object.
  */
 const getConnection = async (custom) => {
   const tag = '[getConnection]'
@@ -46,20 +46,27 @@ const getConnection = async (custom) => {
   }
 
   if (mariadb.pool) {
-    mariadb.connection = await mariadb.pool.getConnection()
-    poolInfo()
+    // eslint-disable-next-line no-useless-catch
+    try {
+      mariadb.connection = await mariadb.pool.getConnection()
 
-    if (mariadb.connection?.isValid()) {
-      return mariadb.connection
+      if (mariadb.connection?.isValid()) {
+        poolInfo()
+        return mariadb.connection
+      } else {
+        const err = `${tag} Failed to get connection from MariaDB pool.`
+        throw new Error(err)
+      }
+    } catch (error) {
+      throw error
     }
   }
 
   // Apply custom configuration
   const cfg = (custom && applyConfig(custom)) || mariadb.config || config
   if (!cfg.host || !cfg.port || !cfg.user || !cfg.password) {
-    throw new Error(
-      `${tag} Information needed to connect to 'MariaDB' is missing in the configuration information.`
-    )
+    const err = `${tag} Configuration needed to connect to MariaDB was not provided.`
+    throw new Error(err)
   }
   mariadb.config = cfg
 
@@ -67,12 +74,19 @@ const getConnection = async (custom) => {
     createPool(cfg)
     return await getConnection()
   } else {
-    mariadb.connection = await mariadb.createConnection(cfg)
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const connection = await mariadb.createConnection(cfg)
 
-    if (mariadb.connection?.isValid()) {
-      return mariadb.connection
-    } else {
-      throw new Error(`${tag} 'MariaDB' not connected!`)
+      if (connection.isValid()) {
+        mariadb.connection = connection
+        return mariadb.connection
+      } else {
+        const err = `${tag} Failed to create MariaDB connection object.`
+        throw new Error(err)
+      }
+    } catch (error) {
+      throw error
     }
   }
 }
@@ -106,8 +120,6 @@ const poolInfo = () => {
     message += `total: ${mariadb.pool.totalConnections()}`
     if (mariadb.config?.logger?.query) {
       mariadb.config.logger.query(message)
-    } else {
-      console.log(message)
     }
   }
 }

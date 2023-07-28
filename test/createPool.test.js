@@ -7,7 +7,8 @@ describe('MariaDB pool create tests', () => {
       port: 3308,
       database: 'test',
       user: 'test',
-      password: ''
+      password: '',
+      logger: { error: null, network: null, query: null }
     }
     let error, pool
 
@@ -30,7 +31,8 @@ describe('MariaDB pool create tests', () => {
       port: 3308,
       database: 'test',
       user: 'test',
-      password: 'wrongPassword'
+      password: 'wrongPassword',
+      logger: { error: null, network: null, query: null }
     }
     let error, pool
 
@@ -50,7 +52,8 @@ describe('MariaDB pool create tests', () => {
       port: 3308,
       database: 'test',
       user: 'test',
-      password: 'test'
+      password: 'test',
+      logger: { error: null, network: null, query: null }
     }
     let error, pool
 
