@@ -7,29 +7,27 @@ import { applyConfig, config } from './config.js'
  * Returns `MariaDB` connection pool that created using configuration information.
  *
  * @param {config} [custom] Configuration(connection, etc.) object to apply when useing an `MariaDB`.
- * @throws {Error} Information needed to connect to MariaDB is missing in the configuration information.
- * @returns {mariadb.Pool} `MariaDB` connection pool.
+ * @throws {Error} Configuration needed to connect to MariaDB was not provided.
+ * @returns {PoolPromise} `MariaDB` connection pool.
  */
-const createPool = (custom) =>
-  new Promise((resolve, reject) => {
-    const tag = '[createPool]'
-    // Apply custom configuration
-    const cfg = (custom && applyConfig(custom)) || mariadb.config || config
-    if (!cfg.host || !cfg.port || !cfg.user || !cfg.password) {
-      reject(
-        new Error(
-          `${tag} Information needed to connect to MariaDB is missing in the configuration information.`
-        )
-      )
-    }
-    mariadb.config = cfg
+const createPool = (custom) => {
+  const tag = '[createPool]'
 
-    if (!mariadb.pool) {
-      mariadb.pool = mariadb.createPool(cfg)
-    }
-    poolInfo()
-    resolve(mariadb.pool)
-  })
+  // Apply custom configuration
+  const cfg = (custom && applyConfig(custom)) || mariadb.config || config
+  if (!cfg.host || !cfg.port || !cfg.user || !cfg.password) {
+    const err = `${tag} Configuration needed to connect to MariaDB was not provided.`
+    throw new Error(err)
+  }
+  mariadb.config = cfg
+
+  if (!mariadb.pool) {
+    mariadb.pool = mariadb.createPool(cfg)
+  }
+  poolInfo()
+
+  return mariadb.pool
+}
 
 /**
  * Return the `MariaDB` connection object after connecting to `MariaDB`.
@@ -100,7 +98,7 @@ const poolInfo = () => {
   const tag = '[poolInfo]'
 
   if (!mariadb.pool) {
-    throw new Error(`${tag} 'MariaDB' connection pool not created!`)
+    throw new Error(`${tag} MariaDB connection pool not created!`)
   } else {
     let message = `${tag} MariaDB connections - `
     message += `active: ${mariadb.pool.activeConnections()} / `
@@ -118,7 +116,7 @@ const poolInfo = () => {
  * Run query statement and returns result.
  *
  * @param {String} query Query statement to be run.
- * @throws {Error} Information needed to connect to 'MariaDB' is missing in the configuration information.
+ * @throws {Error} Configuration needed to connect to MariaDB was not provided.
  * @throws {Error} MariaDB' not connected!
  * @returns {mixed} Result of run query statement.
  */
@@ -127,7 +125,7 @@ const query = async (query) => {
 
   const connection = await getConnection()
   if (!connection || !connection.isValid()) {
-    throw new Error(`${tag} 'MariaDB' not connected!`)
+    throw new Error(`${tag} MariaDB not connected!`)
   }
 
   try {

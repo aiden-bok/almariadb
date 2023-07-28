@@ -15,7 +15,7 @@ describe('MariaDB pool info output tests', () => {
       error = err
     } finally {
       expect(error.message).toBe(
-        `[poolInfo] 'MariaDB' connection pool not created!`
+        `[poolInfo] MariaDB connection pool not created!`
       )
     }
   })
