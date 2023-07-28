@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS plays (
     wins INT
 );
 INSERT INTO plays VALUES 
-    ("Jonh", 20, 5),
+    ("John", 20, 5),
     ("Robert", 22, 8),
     ("Wanda", 32, 8),
     ("Susan", 17, 3);
