@@ -96,9 +96,9 @@ const getConnection = async (custom) => {
  *
  * @param {String} table Table name to use in query statement.
  * @param {Object|String|Array} values Values object that consisting of column names and values to add to table. Or array of lists of values to add to the table.
- * @throws {Error} Not passed table name to be used in query statement!
- * @throws {Error} Not passed object consisting of column and value to be used in INSERT query statement!
- * @throws {Error} Object consisting of columns and values for use in an INSERT query statement was specified incorrectly!
+ * @throws {Error} Not passed table name to be used in query statement.
+ * @throws {Error} Not passed object consisting of column and value to be used in INSERT query statement.
+ * @throws {Error} Object consisting of columns and values for use in an INSERT query statement was specified incorrectly.
  * @returns {mixed} Result of executing `INSERT` query statement.
  */
 const insert = async (table, values) => {
@@ -112,7 +112,7 @@ const poolInfo = () => {
   const tag = '[poolInfo]'
 
   if (!mariadb.pool) {
-    throw new Error(`${tag} MariaDB connection pool not created!`)
+    throw new Error(`${tag} MariaDB connection pool not created.`)
   } else {
     let message = `${tag} MariaDB connections - `
     message += `active: ${mariadb.pool.activeConnections()} / `
@@ -129,25 +129,34 @@ const poolInfo = () => {
  *
  * @param {String} query Query statement to be run.
  * @throws {Error} Configuration needed to connect to MariaDB was not provided.
- * @throws {Error} MariaDB' not connected!
+ * @throws {Error} MariaDB not connected.
  * @returns {mixed} Result of run query statement.
  */
 const query = async (query) => {
   const tag = '[query]'
 
-  const connection = await getConnection()
-  if (!connection || !connection.isValid()) {
-    throw new Error(`${tag} MariaDB not connected!`)
-  }
+  if (mariadb.pool) {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      return await mariadb.pool.query(query)
+    } catch (error) {
+      throw error
+    }
+  } else {
+    const connection = await getConnection()
+    if (!connection || !connection?.isValid()) {
+      throw new Error(`${tag} MariaDB not connected.`)
+    }
 
-  try {
-    return await connection.query(query)
-  } catch (error) {
-    throw new Error(`${tag} ${error.toString()}`)
-  } finally {
-    connection.destroy && connection.destroy()
-    connection.release && connection.release()
-    connection.end && connection.end()
+    try {
+      return await connection.query(query)
+      // eslint-disable-next-line no-useless-catch
+    } catch (error) {
+      throw error
+    } finally {
+      connection.release && connection.release()
+      connection.end && connection.end()
+    }
   }
 }
 
@@ -159,8 +168,8 @@ const query = async (query) => {
  * @param {String|Array|Object} [where=null] Where condition to be used in query statement.
  * @param {String|Array|Object} [order=null] Order by clause to be used in query statement.
  * @param {Number} [limit=0] Number of rows to return to be used in query statement. If `0` no limit in used.
- * @throws {Error} Not passed table name to be used in query statement!
- * @throws {Error} Table name to use in the query statement is not specified!
+ * @throws {Error} Not passed table name to be used in query statement.
+ * @throws {Error} Table name to use in the query statement is not specified.
  * @returns {mixed} Result of executing `SELECT` query statement.
  */
 const select = async (
@@ -183,8 +192,8 @@ const select = async (
  * @param {String} [having=null] Having condition to be used in group by clause of query statement.
  * @param {String|Array|Object} [order=null] Order by clause to be used in query statement.
  * @param {Number} [limit=0] Number of rows to return to be used in query statement. If `0` no limit in used.
- * @throws {Error} Not passed table name to be used in query statement!
- * @throws {Error} Table name to use in the query statement is not specified!
+ * @throws {Error} Not passed table name to be used in query statement.
+ * @throws {Error} Table name to use in the query statement is not specified.
  * @returns {mixed} Result of executing `SELECT` query statement using group.
  */
 const selectGroup = async (
@@ -212,7 +221,7 @@ const selectGroup = async (
  * @param {String|Array|Object} [where=null] Where condition to be used in query statement.
  * @param {String|Array|Object} [order=null] Order by clause to be used in query statement.
  * @param {Number} [limit=0] Number of rows to return to be used in query statement. If `0` no limit in used.
- * @throws {Error} Not passed table name to be used in query statement!
+ * @throws {Error} Not passed table name to be used in query statement.
  * @returns {mixed} Result of executing `SELECT` query statement using table join.
  */
 const selectJoin = async (
@@ -243,8 +252,8 @@ const selectJoin = async (
  * @param {String} [having=null] Having condition to be used in group by clause of query statement.
  * @param {String|Array|Object} [order=null] Order by clause to be used in query statement.
  * @param {Number} [limit=0] Number of rows to return to be used in query statement. If `0` no limit in used.
- * @throws {Error} Not passed table name to be used in query statement!
- * @throws {Error} Table name to use in the query statement is not specified!
+ * @throws {Error} Not passed table name to be used in query statement.
+ * @throws {Error} Table name to use in the query statement is not specified.
  * @returns {mixed} Result of executing `SELECT` query statement using table join and group.
  */
 const selectJoinGroup = async (
@@ -281,10 +290,10 @@ const selectJoinGroup = async (
  * @param {String} table Table name to use in query statement.
  * @param {Object|Array|String} values Values object that consisting of column names and values to be used in `UPDATE` query statement. Or array of lists of values to update to the table.
  * @param {String|Array|Object} where Where condition to be used in query statement.
- * @throws {Error} Not passed table name to be used in query statement!
- * @throws {Error} Not passed update condition clause to be used in UPDATE query statement!
- * @throws {Error} Not passed object consisting of column and value to be used in UPDATE query statement!
- * @throws {Error} Object consisting of columns and values for use in an UPDATE query statement was specified incorrectly!
+ * @throws {Error} Not passed table name to be used in query statement.
+ * @throws {Error} Not passed update condition clause to be used in UPDATE query statement.
+ * @throws {Error} Not passed object consisting of column and value to be used in UPDATE query statement.
+ * @throws {Error} Object consisting of columns and values for use in an UPDATE query statement was specified incorrectly.
  * @returns {mixed} Result of executing `UPDATE` query statement.
  */
 const update = async (table, values, where) => {
