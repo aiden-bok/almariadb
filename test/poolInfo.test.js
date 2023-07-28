@@ -28,7 +28,11 @@ describe('MariaDB pool info output tests', () => {
       database: 'test',
       user: 'test',
       password: 'test',
-      logger: { error: null, network: null, query: null }
+      logger: {
+        error: null,
+        network: null,
+        query: (message) => console.log(message)
+      }
     }
     almariadb.createPool(config)
     almariadb.poolInfo()
