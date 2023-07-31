@@ -41,3 +41,9 @@ INSERT INTO b VALUES
     (2, 2, "BB"),
     (3, 6, "FF"),
     (4, 7, "GG");
+
+
+CREATE TABLE IF NOT EXISTS test (
+    id INT,
+    name VARCHAR(20)
+);
