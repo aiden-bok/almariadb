@@ -27,9 +27,9 @@ export const config = {
    */
   password: '',
   /**
-   * @property {Number} connectionTimeout Connection timeout(in milliseconds).
+   * @property {Number} connectTimeout Connection timeout(in milliseconds).
    */
-  connectionTimeout: 1000,
+  connectTimeout: 1000,
   /**
    * @property {Boolean} compress Compress exchanges with database using gzip. This can give you better performance when accessing a database in a different location.
    */

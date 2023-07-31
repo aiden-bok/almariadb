@@ -1,0 +1,16 @@
+version: '3.1'
+
+services:
+  ams-db:
+    container_name: test-db
+    image: mariadb:11
+    ports:
+      - 3308:3306
+    volumes:
+      - ./db/conf.d:/etc/mysql/conf.d
+      - ./db/data:/var/lib/mysql
+      - ./db/initdb.d:/docker-entrypoint-initdb.d
+    env_file: ./db/.env
+    environment:
+      TZ: Asia/Seoul
+    restart: always
