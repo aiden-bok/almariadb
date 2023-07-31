@@ -33,6 +33,10 @@ logs
 ## Test
 coverage
 
+# Docker Database --------------------------------------------------------------
+## Data
+**/db/data
+
 # Visual Studio Code -----------------------------------------------------------
 ## Settings
 .vscode
