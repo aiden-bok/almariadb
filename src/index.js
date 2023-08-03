@@ -4,6 +4,20 @@ import mariadb from 'mariadb'
 import { applyConfig, config } from './config.js'
 
 /**
+ * Executes `MariaDB` procedure or function and returns results.
+ *
+ * @param {String} target `MariaDB` procedure or function name to execute.
+ * @param {Array|Object|String} [params=null] Parameters to pass when executing a `MariaDB` procedure or function.
+ * @throws {Error} Configuration needed to connect to MariaDB was not provided.
+ * @throws {Error} MariaDB not connected.
+ * @returns {mixed} Result of run query statement.
+ */
+const call = async (target, params = null) => {
+  const { query, param } = alquery.queryCall(target, params)
+  return await queryWithParam(query, param)
+}
+
+/**
  * Returns `MariaDB` connection pool that created using configuration information.
  *
  * @param {config} [custom] Configuration(connection, etc.) object to apply when useing an `MariaDB`.
@@ -161,6 +175,43 @@ const query = async (query) => {
 }
 
 /**
+ * Run query statement with parameters and returns result.
+ *
+ * @param {String} query Query statement to be run.
+ * @param {Array} [params=null] Parameters to be passed to the query statement.
+ * @throws {Error} Configuration needed to connect to MariaDB was not provided.
+ * @throws {Error} MariaDB not connected.
+ * @returns {mixed} Result of run query statement.
+ */
+const queryWithParam = async (query, params = null) => {
+  const tag = '[queryWithParam]'
+
+  if (mariadb.pool) {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      return await mariadb.pool.query(query, params)
+    } catch (error) {
+      throw error
+    }
+  } else {
+    const connection = await getConnection()
+    if (!connection || !connection?.isValid()) {
+      throw new Error(`${tag} MariaDB not connected.`)
+    }
+
+    try {
+      return await connection.query(query, params)
+      // eslint-disable-next-line no-useless-catch
+    } catch (error) {
+      throw error
+    } finally {
+      connection.release && connection.release()
+      connection.end && connection.end()
+    }
+  }
+}
+
+/**
  * Returns result after executing `SELECT` query statement.
  *
  * @param {String|Array|Object} table Table name to use in query statement.
@@ -301,12 +352,14 @@ const update = async (table, values, where) => {
 }
 
 const almariadb = {
+  call,
   createPool,
   getConnection,
   insert,
   mariadb,
   poolInfo,
   query,
+  queryWithParam,
   select,
   selectGroup,
   selectJoin,

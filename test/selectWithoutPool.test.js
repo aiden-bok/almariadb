@@ -30,7 +30,7 @@ describe('MariaDB select query tests using connection pool', () => {
       .finally(() => {
         expect(result).toBe(undefined)
         expect(error.message).toBe(
-          `[parseTable] Not passed table name to be used in query statement!`
+          `[parseTable] Not passed table name to be used in query statement.`
         )
         expect(error).toBeInstanceOf(Error)
       })
@@ -46,7 +46,7 @@ describe('MariaDB select query tests using connection pool', () => {
     } finally {
       expect(result).toBe(undefined)
       expect(error.message).toBe(
-        `[parseTable] Not passed table name to be used in query statement!`
+        `[parseTable] Not passed table name to be used in query statement.`
       )
       expect(error).toBeInstanceOf(Error)
     }
