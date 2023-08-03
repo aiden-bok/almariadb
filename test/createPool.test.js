@@ -8,7 +8,7 @@ describe('MariaDB pool create tests', () => {
       database: 'test',
       user: 'test',
       password: '',
-      logger: { error: null, network: null, query: null }
+      logger: []
     }
     let error, pool
 
@@ -32,7 +32,7 @@ describe('MariaDB pool create tests', () => {
       database: 'test',
       user: 'test',
       password: 'wrongPassword',
-      logger: { error: null, network: null, query: null }
+      logger: { error: null, network: null }
     }
     let error, pool
 
