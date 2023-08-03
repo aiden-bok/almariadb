@@ -79,7 +79,6 @@ describe('MariaDB update query tests using connection pool', () => {
         error = err
       })
       .finally(() => {
-        console.log(result)
         expect(result.affectedRows).toBe(1)
         expect(error).toBe(undefined)
       })
