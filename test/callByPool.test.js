@@ -66,7 +66,7 @@ describe('MariaDB call procedure or function tests using connection pool', () =>
         error = err
       })
       .finally(() => {
-        expect(result.affectedRows).toBe(1)
+        expect(result[0]).toStrictEqual([{ 'param1 * param1': 400n }])
         expect(error).toBe(undefined)
       })
   })
