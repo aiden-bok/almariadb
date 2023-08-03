@@ -1,6 +1,6 @@
 import almariadb from '../src/index.js'
 
-describe('MariaDB insert query tests using connection pool', () => {
+describe('MariaDB update query tests using connection pool', () => {
   const config = {
     host: '127.0.0.1',
     port: 3308,
@@ -11,14 +11,15 @@ describe('MariaDB insert query tests using connection pool', () => {
   }
   almariadb.createPool(config)
 
-  const table = 'test'
-  const values = { name: 'test' }
+  const table = 'plays'
+  const values = { wins: 6 }
+  const where = { name: `'John'` }
 
-  test(`insert() throws error - Promise`, async () => {
+  test(`update() throws error - Promise`, async () => {
     let error, result
 
     await almariadb
-      .insert()
+      .update()
       .then((res) => {
         result = res
       })
@@ -28,33 +29,49 @@ describe('MariaDB insert query tests using connection pool', () => {
       .finally(() => {
         expect(result).toBe(undefined)
         expect(error.message).toBe(
-          `[queryInsert] Not passed table name to be used in query statement.`
+          `[queryUpdate] Not passed table name to be used in query statement.`
         )
         expect(error).toBeInstanceOf(Error)
       })
   })
 
-  test(`insert() throws error - Await`, async () => {
+  test(`update() throws error - Await`, async () => {
     let error, result
 
     try {
-      result = await almariadb.insert()
+      result = await almariadb.update()
     } catch (err) {
       error = err
     } finally {
       expect(result).toBe(undefined)
       expect(error.message).toBe(
-        `[queryInsert] Not passed table name to be used in query statement.`
+        `[queryUpdate] Not passed table name to be used in query statement.`
       )
       expect(error).toBeInstanceOf(Error)
     }
   })
 
-  test(`insert() returns result - Promise`, async () => {
+  test(`update() throws error(where) - Await`, async () => {
+    let error, result
+
+    try {
+      result = await almariadb.update(table, values)
+    } catch (err) {
+      error = err
+    } finally {
+      expect(result).toBe(undefined)
+      expect(error.message).toBe(
+        `[queryUpdate] Not passed update condition clause to be used in UPDATE query statement.`
+      )
+      expect(error).toBeInstanceOf(Error)
+    }
+  })
+
+  test(`update() returns result - Promise`, async () => {
     let error, result
 
     await almariadb
-      .insert(table, values)
+      .update(table, values, where)
       .then((res) => {
         result = res
       })
@@ -67,11 +84,11 @@ describe('MariaDB insert query tests using connection pool', () => {
       })
   })
 
-  test(`insert() returns result - Await`, async () => {
+  test(`update() returns result - Await`, async () => {
     let error, result
 
     try {
-      result = await almariadb.insert(table, values)
+      result = await almariadb.update(table, values, where)
     } catch (err) {
       error = err
     } finally {

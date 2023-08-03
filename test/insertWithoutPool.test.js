@@ -29,7 +29,7 @@ describe('MariaDB insert query tests using connection pool', () => {
       .finally(() => {
         expect(result).toBe(undefined)
         expect(error.message).toBe(
-          `[queryInsert] Not passed table name to be used in query statement!`
+          `[queryInsert] Not passed table name to be used in query statement.`
         )
         expect(error).toBeInstanceOf(Error)
       })
@@ -45,7 +45,7 @@ describe('MariaDB insert query tests using connection pool', () => {
     } finally {
       expect(result).toBe(undefined)
       expect(error.message).toBe(
-        `[queryInsert] Not passed table name to be used in query statement!`
+        `[queryInsert] Not passed table name to be used in query statement.`
       )
       expect(error).toBeInstanceOf(Error)
     }
